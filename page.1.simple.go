@@ -34,18 +34,18 @@ func Page1SimplePost(w http.ResponseWriter, req *http.Request) {
 	Rewrites(w, RewriteRow(`simple-record`, SimpleRecord(state.nickname, state.categ, categs)))
 }
 
-func LoadSimplePageState(req *http.Request) (state SimpleState_t, categs []CategOption_t) {
+func LoadSimplePageState(req *http.Request) (state SimpleState_t, categs IdMap_t[Categ_t]) {
 	state, _ = App.SimpleStateGet(req)
-	categs = append([]CategOption_t(nil), App.CategOptions...)
+	categs = App.lookup.categs
 	state.categ = PickCateg(state.categ, categs)
 	return
 }
 
-func PickCateg(wanted int, list []CategOption_t) int {
-	for _, x := range list {
-		if x.id == wanted { return wanted }
+func PickCateg(wanted int, idMap IdMap_t[Categ_t]) int {
+	if _, ok := idMap.byId[wanted]; ok { return wanted }
+	if len(idMap.sort) > 0 {
+		return idMap.sort[0]
 	}
-	if len(list) > 0 { return list[0].id }
 	return 0
 }
 
@@ -57,7 +57,7 @@ func ParseSimpleFormInt(raw string) int {
 	return out
 }
 
-func SimplePage(w0 http.ResponseWriter, nickname string, categ int, categs []CategOption_t) {
+func SimplePage(w0 http.ResponseWriter, nickname string, categ int, categs IdMap_t[Categ_t]) {
 	head := Head().
 		CSS(Str(`/static/css/phone.quote.css?v=`, App.StaticVersion)).
 		JSTail(Str(`/static/js/validate.js?v=`, App.StaticVersion)).
@@ -80,7 +80,7 @@ func SimplePage(w0 http.ResponseWriter, nickname string, categ int, categs []Cat
 	)
 }
 
-func SimpleRecord(nickname string, categ int, categs []CategOption_t) Elem_t {
+func SimpleRecord(nickname string, categ int, categs IdMap_t[Categ_t]) Elem_t {
 	return Div(
 		FormField(`nickname`, `Nickname`,
 			TextInput(`nickname`, nickname).KV(`maxlength`, `40`),
@@ -95,22 +95,23 @@ func SimpleRecord(nickname string, categ int, categs []CategOption_t) Elem_t {
 	).Id(`simple-record`).Args(`state:1`)
 }
 
-func CategSelect(name string, selected int, values []CategOption_t) Elem_t {
+func CategSelect(name string, selected int, idMap IdMap_t[Categ_t]) Elem_t {
 	sel := Select().Name(name).Id(name).Class(`input`)
-	for _, x := range values {
-		sel = sel.Wrap(Option().Value(x.id).Text(x.name))
+	for _, id := range idMap.sort {
+		x, ok := idMap.byId[id]
+		if !ok { continue }
+		sel = sel.Wrap(Option().Value(x.categId).Text(x.name))
 	}
 	return sel.SelO(selected)
 }
 
-func CategName(categ int, list []CategOption_t) string {
-	for _, x := range list {
-		if x.id == categ { return x.name }
-	}
+func CategName(categ int, idMap IdMap_t[Categ_t]) string {
+	x, ok := idMap.byId[categ]
+	if ok { return x.name }
 	return ``
 }
 
-func NicknamePreview(nickname string, categ int, categs []CategOption_t) Elem_t {
+func NicknamePreview(nickname string, categ int, categs IdMap_t[Categ_t]) Elem_t {
 	show := Trim(Str(CategName(categ, categs), ` `, nickname))
 	if show == `` { show = `(empty)` }
 	return Div(

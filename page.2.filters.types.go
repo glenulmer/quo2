@@ -11,7 +11,6 @@ type LevelName_t struct {
 }
 
 type FilterLookups_t struct {
-	deductValues []int
 	hospitalLevels []LevelName_t
 	dentalLevels []LevelName_t
 	priorCoverOptions []CodebookOption_t
@@ -36,4 +35,3 @@ type FilterState_t struct {
 	exam int
 	specialist int
 }
-

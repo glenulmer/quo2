@@ -1,6 +1,7 @@
 package main
 
 import "net/http"
+import . "klec/lib/dec2"
 import . "klec/lib/wrapdb"
 
 type Session_t struct {
@@ -22,13 +23,19 @@ type App_t struct {
 	Port          string
 	StaticVersion string
 	Session       Session_t
-	CategOptions  []CategOption_t
 	sessionState  map[string]SimpleState_t
-	FilterLookups FilterLookups_t
-	CustomerLookups CustomerLookups_t
 	sessionFilters map[string]FilterState_t
 	sessionCustomers map[string]CustomerState_t
 	sessionEpoch map[string]int
+	defaultYear int
+
+	lookup struct {
+		filters FilterLookups_t
+		deductibles IdMap_t[[]EuroFlat_t]
+		categs IdMap_t[Categ_t]
+		segments IdMap_t[Segment_t]
+		years IdMap_t[YearVars_t]
+	}
 }
 
 var App App_t

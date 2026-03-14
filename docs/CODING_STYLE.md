@@ -38,6 +38,8 @@ Preserve local style and behavior first. Prefer consistency with surrounding cod
 - `switch` with compact case bodies.
 - Semicolons appear occasionally and should not be treated as mistakes if already present.
 - Keep short dense expressions when they improve local readability.
+- Avoid named return signatures in the form `func X() (out T)`.
+- Prefer bare return types: `func X() T`, with a local `out := ...` variable when useful, and `return out`.
 - Never run gofmt. Never run gofmt.
 
 ## Code Style Patterns

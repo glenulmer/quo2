@@ -21,4 +21,4 @@ Purpose: single source-of-truth for all stored procedures called from Go.
 | `spPriorCovQuery` | `klec_priorcov_query` | `static` | `bootstrap` | `App.FilterLookups.priorCoverOptions` | prior-cover codebook |
 | `spReferralsQuery` | `klec_referrals_query` | `static` | `bootstrap` | `App.FilterLookups.specialistOptions` | referral codebook used to validate specialist options |
 | `spLevelChooser` | `quo_level_chooser` | `static` | `bootstrap` | `App.FilterLookups.hospitalLevels` + `App.FilterLookups.dentalLevels` | level options for hospital/dental filters |
-| `spPlanDeductiblesDistinct` | `plan_deductibles_distinct` | `static` | `bootstrap` | `App.FilterLookups.deductValues` | deductible options (adult set selected via app age constant) |
+| `spPlanDeductiblesDistinct` | `plan_deductibles_distinct` | `static` | `bootstrap` | `App.lookup.deductibles` (`0=child`,`1=adult`) | deductible options grouped by child/adult flag |

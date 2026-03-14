@@ -19,4 +19,4 @@ Purpose: define DB lookups that are static for request-time behavior and must be
 | `spPriorCovQuery` | `klec_priorcov_query` | `App.FilterLookups.priorCoverOptions` | `LoadFilterLookups()` | prior-cover filter options |
 | `spReferralsQuery` | `klec_referrals_query` | `App.FilterLookups.specialistOptions` | `LoadFilterLookups()` | specialist option validation against referral codes |
 | `spLevelChooser` | `quo_level_chooser` | `App.FilterLookups.hospitalLevels` + `App.FilterLookups.dentalLevels` | `LoadFilterLookups()` | hospital/dental level options |
-| `spPlanDeductiblesDistinct` | `plan_deductibles_distinct` | `App.FilterLookups.deductValues` | `LoadFilterLookups()` | deductible options; page currently uses adult set via `DeductibleLookupAgeYears` |
+| `spPlanDeductiblesDistinct` | `plan_deductibles_distinct` | `App.lookup.deductibles` (`0=child`,`1=adult`) | `LoadStaticData()` | deductible options grouped by child/adult flag |

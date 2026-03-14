@@ -37,15 +37,14 @@ func LoadFilterLookups() FilterLookups_t {
 		}
 	}
 
-	hospitalCateg := CategIDByName(App.CategOptions, `hospital`)
-	dentalCateg := CategIDByName(App.CategOptions, `dental`)
+	hospitalCateg := CategIDByName(App.lookup.categs, `hospital`)
+	dentalCateg := CategIDByName(App.lookup.categs, `dental`)
 	if hospitalCateg <= 0 || dentalCateg <= 0 {
 		panic(Error(`missing hospital/dental category IDs from quo_categs_query`))
 	}
 	out.hospitalLevels = QueryLevelChooser(hospitalCateg)
 	out.dentalLevels = QueryLevelChooser(dentalCateg)
 
-	out.deductValues = QueryPlanDeductibleValues(IsAdultAgeYears(DeductibleLookupAgeYears))
 	ValidateFilterLookupsLoaded(out)
 
 	return out
@@ -55,13 +54,14 @@ func ValidateFilterLookupsLoaded(x FilterLookups_t) {
 	if len(x.priorCoverOptions) == 0 { panic(Error(`empty static lookup from `, spPriorCovQuery)) }
 	if len(x.hospitalLevels) == 0 { panic(Error(`empty static lookup from `, spLevelChooser, ` for hospital category`)) }
 	if len(x.dentalLevels) == 0 { panic(Error(`empty static lookup from `, spLevelChooser, ` for dental category`)) }
-	if len(x.deductValues) == 0 { panic(Error(`empty static lookup from `, spPlanDeductiblesDistinct, ` for adult deductibles`)) }
 }
 
-func CategIDByName(list []CategOption_t, name string) int {
+func CategIDByName(idMap IdMap_t[Categ_t], name string) int {
 	name = strings.ToLower(strings.TrimSpace(name))
-	for _, x := range list {
-		if strings.ToLower(strings.TrimSpace(x.name)) == name { return x.id }
+	for _, id := range idMap.sort {
+		x, ok := idMap.byId[id]
+		if !ok { continue }
+		if strings.ToLower(strings.TrimSpace(x.name)) == name { return x.categId }
 	}
 	return 0
 }
@@ -120,22 +120,5 @@ func QueryLevelChooser(categ int) (levels []LevelName_t) {
 		levels = append(levels, x)
 	}
 	if e := rows.Err(); e != nil { panic(Error(`rows `, spLevelChooser, ` failed: `, e)) }
-	return
-}
-
-func QueryPlanDeductibleValues(useAdult bool) (values []int) {
-	rows := App.DB.Call(spPlanDeductiblesDistinct)
-	if rows.HasError() { panic(Error(`call `, spPlanDeductiblesDistinct, ` failed: `, rows.Message())) }
-	defer rows.Close()
-	for rows.Next() {
-		var isAdult int
-		var value int
-		e := rows.Scan(&isAdult, &value)
-		if e != nil { panic(Error(`scan `, spPlanDeductiblesDistinct, ` failed: `, e)) }
-		if (isAdult != 0) != useAdult { continue }
-		if value < 0 { continue }
-		values = append(values, value)
-	}
-	if e := rows.Err(); e != nil { panic(Error(`rows `, spPlanDeductiblesDistinct, ` failed: `, e)) }
 	return
 }

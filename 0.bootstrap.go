@@ -57,7 +57,7 @@ func Bootstrap() {
 		sessionCustomers: make(map[string]CustomerState_t),
 		sessionEpoch: make(map[string]int),
 	}
-	LoadStaticLookupsOrPanic()
+	LoadStaticData()
 	App.Port = cfg.port
 	App.StaticVersion = ComputeStaticVersion()
 	App.Session = cfg.session
