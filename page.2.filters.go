@@ -6,10 +6,10 @@ import (
 	"strings"
 	"time"
 
-	. "klec/lib/dec2"
-	. "klec/lib/htmlHelper"
-	. "klec/lib/output"
-	. "klec/pkg.Global"
+	. "pm/lib/dec2"
+	. "pm/lib/htmlHelper"
+	. "pm/lib/output"
+	. "pm/pkg.Global"
 )
 
 const postFiltersState = `/post/filters/state`
@@ -101,7 +101,7 @@ func LoadCustomerPageState(req *http.Request) (state CustomerState_t) {
 func DefaultCustomerState() CustomerState_t {
 	out := CustomerState_t{
 		buy: QueryCurrentDateISO(),
-		cover: Str(CoverDefaultValue()),
+		cover: CoverDefaultValue(),
 	}
 	for _, segment := range App.lookup.segments.sort {
 		if _, ok := App.lookup.segments.byId[segment]; ok {
@@ -117,7 +117,7 @@ func NormalizeCustomerState(state CustomerState_t) CustomerState_t {
 	out.name = NormalizeCustomerName(state.name)
 	out.birth = NormalizeDateInput(state.birth)
 	out.buy = NormalizeDateInput(state.buy)
-	if cover, ok := NormalizeCoverInput(state.cover, CoverMaxValue()); ok {
+	if cover, ok := NormalizeCoverValue(state.cover, CoverMaxValue()); ok {
 		out.cover = cover
 	}
 	out.segment = PickSegment(state.segment, out.segment)
@@ -140,21 +140,29 @@ func NormalizeDateInput(raw string) string {
 	return out
 }
 
-func NormalizeCoverInput(raw string, max int) (string, bool) {
+func NormalizeCoverInput(raw string, max int) (EuroFlat_t, bool) {
 	cover := OnlyDigits(Trim(raw))
 	if cover < 0 { cover = 0 }
-	if max > 0 && cover > max { return Str(cover), false }
-	return Str(cover), true
+	value := EuroFlat_t(cover)
+	if max > 0 && cover > max { return value, false }
+	return value, true
 }
 
-func CoverDisplayEuro(raw string) string {
-	return EuroFlat_t(OnlyDigits(Trim(raw))).OutEuro()
+func NormalizeCoverValue(raw EuroFlat_t, max int) (EuroFlat_t, bool) {
+	value := raw
+	if value < 0 { value = 0 }
+	if max > 0 && int(value) > max { return value, false }
+	return value, true
 }
 
-func CoverDefaultValue() int {
+func CoverDisplayEuro(raw EuroFlat_t) string {
+	return raw.OutEuro()
+}
+
+func CoverDefaultValue() EuroFlat_t {
 	x, ok := App.lookup.years.byId[App.defaultYear]
 	if !ok || x.cover <= 0 { return 0 }
-	out := int(x.cover / 100)
+	out := x.cover
 	if out < 0 { return 0 }
 	return out
 }
@@ -162,8 +170,8 @@ func CoverDefaultValue() int {
 func CoverMaxValue() int {
 	x, ok := App.lookup.years.byId[App.defaultYear]
 	if !ok { return 0 }
-	out := int(x.maxCover() / 100)
-	min := int(x.cover / 100)
+	out := int(x.maxCover())
+	min := int(x.cover)
 	if min < 0 { min = 0 }
 	if out < min { return min }
 	if out < 0 { return 0 }
@@ -375,7 +383,7 @@ func RenderCustomer(state CustomerState_t) Elem_t {
 						Class(`ios-input`, `r`).
 						KV(`maxlength`, `16`).
 						KV(`data-cover-max`, Str(CoverMaxValue())).
-						KV(`data-orig`, state.cover).
+						KV(`data-orig`, Str(int(state.cover))).
 						Value(CoverDisplayEuro(state.cover)),
 				),
 				IOSFormField(`segment`, `Segment`,

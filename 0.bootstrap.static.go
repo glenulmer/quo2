@@ -3,8 +3,8 @@ package main
 import (
 	"database/sql"
 	"strings"
-	. "klec/lib/output"
-	. "klec/lib/dec2"
+	. "pm/lib/output"
+	. "pm/lib/dec2"
 )
 
 func LoadStaticData() {
@@ -73,8 +73,10 @@ func LoadYearVarsIdMap() IdMap_t[YearVars_t] {
 	for rows.Next() {
 		var x YearVars_t
 		var exists, isPast bool
-		e := rows.Scan(&x.year, &x.maxshare, &x.cover, &x.ltccap, &exists, &isPast, new(sql.NullString))
+		var coverCents EuroCent_t
+		e := rows.Scan(&x.year, &x.maxshare, &coverCents, &x.ltccap, &exists, &isPast, new(sql.NullString))
 		if e != nil { panic(Error(`scan `, spYearGet, ` failed: `, e)) }
+		x.cover = EuroFlatFromCent(coverCents)
 		if isPast || !exists || x.year <= 0 { continue }
 		out = out.Add(x.year, x)
 	}
@@ -94,12 +96,13 @@ func DeductiblesIdMap() IdMap_t[[]EuroFlat_t] {
 	defer rows.Close()
 	for rows.Next() {
 		var isAdult int
-		var value EuroFlat_t
-		e := rows.Scan(&isAdult, &value)
+		var cents EuroCent_t
+		e := rows.Scan(&isAdult, &cents)
 		if e != nil { panic(Error(`scan `, spPlanDeductiblesDistinct, ` failed: `, e)) }
 		if isAdult != 0 && isAdult != 1 {
 			panic(Error(`invalid adult flag from `, spPlanDeductiblesDistinct, `: `, isAdult))
 		}
+		value := EuroFlatFromCent(cents)
 		if value < 0 { continue }
 		lists[isAdult] = append(lists[isAdult], value)
 	}

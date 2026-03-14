@@ -4,9 +4,9 @@ import (
 	"net/http"
 	"strconv"
 
-	. "klec/lib/htmlHelper"
-	. "klec/lib/output"
-	. "klec/pkg.Global"
+	. "pm/lib/htmlHelper"
+	. "pm/lib/output"
+	. "pm/pkg.Global"
 )
 
 const postSimpleState = `/post/simple/state`

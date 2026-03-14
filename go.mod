@@ -4,7 +4,7 @@ go 1.25.3
 
 require (
 	github.com/go-chi/chi/v5 v5.0.8
-	klec v0.0.0
+	pm v0.0.0
 )
 
 require (
@@ -12,4 +12,4 @@ require (
 	golang.org/x/crypto v0.44.0 // indirect
 )
 
-replace klec => ../klec
+replace pm => ../pm

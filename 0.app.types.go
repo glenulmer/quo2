@@ -1,8 +1,8 @@
 package main
 
 import "net/http"
-import . "klec/lib/dec2"
-import . "klec/lib/wrapdb"
+import . "pm/lib/dec2"
+import . "pm/lib/wrapdb"
 
 type Session_t struct {
 	Name     string

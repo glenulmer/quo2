@@ -6,7 +6,7 @@ import (
 
 	"github.com/go-chi/chi/v5"
 
-	. "klec/lib/output"
+	. "pm/lib/output"
 )
 
 func main() {

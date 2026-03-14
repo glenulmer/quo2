@@ -1,6 +1,6 @@
 package main
 
-import . "klec/lib/dec2"
+import . "pm/lib/dec2"
 
 type Segment_t struct {
 	segment int
@@ -22,8 +22,7 @@ type YearVars_t struct {
 	year int
 	maxshare EuroFlat_t
 	ltccap EuroFlat_t
-	cover EuroCent_t
+	cover EuroFlat_t
 }
 
-func (x YearVars_t)maxCover() EuroCent_t { return x.cover * 2 }
-
+func (x YearVars_t)maxCover() EuroFlat_t { return x.cover * 2 }

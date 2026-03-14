@@ -1,8 +1,8 @@
 package main
 
 import (
-	. "klec/lib/htmlHelper"
-	. "klec/lib/output"
+	. "pm/lib/htmlHelper"
+	. "pm/lib/output"
 )
 
 func Card(title any, body ...any) Elem_t {

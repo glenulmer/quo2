@@ -1,7 +1,7 @@
 package main
 
 import "strings"
-import . "klec/lib/output"
+import . "pm/lib/output"
 
 const spPriorCovQuery = `klec_priorcov_query`
 const spReferralsQuery = `klec_referrals_query`

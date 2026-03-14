@@ -10,8 +10,8 @@ import (
 	"strings"
 	"time"
 
-	. "klec/lib/output"
-	. "klec/lib/wrapdb"
+	. "pm/lib/output"
+	. "pm/lib/wrapdb"
 )
 
 const (

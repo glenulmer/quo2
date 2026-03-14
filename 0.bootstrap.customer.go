@@ -1,6 +1,6 @@
 package main
 
-import . "klec/lib/output"
+import . "pm/lib/output"
 
 const spSegmentsQuery = `quo_segments_query`
 const spYearGet = `klec_year_get`
