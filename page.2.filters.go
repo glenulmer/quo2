@@ -391,7 +391,7 @@ func RenderCustomer(state CustomerState_t) Elem_t {
 						Value(CoverDisplayEuro(state.cover)),
 				),
 				IOSFormField(`segment`, `Segment`,
-					SegmentSelect(state.segment, App.lookup.segments),
+					SegmentSelect(state.segment),
 				),
 		).Class(`ios-row2`, `ios-row3`),
 		Div(
@@ -505,15 +505,7 @@ func IOSFormFieldWedge(id, label, sideClass string, control Elem_t) Elem_t {
 func DeductSelect(name string, selected int, values []EuroFlat_t) Elem_t {
 	sel := Select().Name(name).Id(name).Class(`ios-select`, `r`)
 	for _, x := range values { sel = sel.Wrap(Option().Value(int(x)).Text(x.OutEuro())) }
-	return sel.SelO(selected)
+	return sel.Choose(selected)
 }
 
-func SegmentSelect(selected int, idMap IdMap_t[Segment_t]) Elem_t {
-	sel := Select().Name(`segment`).Id(`segment`).Class(`ios-select`).KV(`data-orig`, Str(selected))
-	for _, id := range idMap.sort {
-		x, ok := idMap.byId[id]
-		if !ok { continue }
-		sel = sel.Wrap(Option().Value(x.segment).Text(x.name))
-	}
-	return sel.SelO(selected)
-}
+func SegmentSelect(selected int) Elem_t { return App.selects.segment.Clone().Choose(selected) }

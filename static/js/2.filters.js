@@ -14,20 +14,6 @@
 		wedge.style.opacity = showWedge ? `1` : `0`;
 	}
 
-	const SelectValidator = {
-		SetupControl: function (ctrl) {
-			applyCtrlState(ctrl, true, false, SoftState, false);
-		},
-
-		EventHandler: function (ctrl) {
-			const value = String(ctrl.value || ``).trim();
-			const orig = String(ctrl.dataset.orig || ``).trim();
-			const changed = value !== orig;
-			applyCtrlState(ctrl, true, changed, SoftState, false);
-			return true;
-		},
-	};
-
 	const CoverValidator = {
 		SetupControl: function (ctrl) {
 			const digits = coverDigits(ctrl.value || ctrl.dataset.orig || ``);
@@ -133,18 +119,8 @@
 	document.addEventListener(`DOMContentLoaded`, function () {
 		if (typeof Validator !== `undefined` && Validator && typeof Validator.Setup === `function`) {
 			Validator.
-				Register(SelectValidator,
-					`deduct-min`, `deduct-max`,
-					`hospital-min`, `hospital-max`,
-					`dental-min`, `dental-max`,
-				).
 				Register(CoverValidator, `cover`).
-				OnlyUpdated(
-					`deduct-min`, `deduct-max`,
-					`hospital-min`, `hospital-max`,
-					`dental-min`, `dental-max`,
-					`cover`,
-				).
+				OnlyUpdated(`cover`).
 				Setup();
 		}
 

@@ -58,6 +58,7 @@ func Bootstrap() {
 		sessionEpoch: make(map[string]int),
 	}
 	LoadStaticData()
+	LoadSelectElements()
 	App.Port = cfg.port
 	App.StaticVersion = ComputeStaticVersion()
 	App.Session = cfg.session

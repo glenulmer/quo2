@@ -1,0 +1,17 @@
+/quo2
+
+# Go build artifacts
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Go test artifacts
+*.test
+*.out
+coverage.out
+
+# Local Go workspace files
+go.work
+go.work.sum

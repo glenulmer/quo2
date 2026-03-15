@@ -12,7 +12,7 @@ func SelectFromOptions(name string, selected int, options []SelectOption_t) Elem
 	for _, x := range options {
 		sel = sel.Wrap(Option().Value(x.id).Text(x.name))
 	}
-	return sel.SelO(selected)
+	return sel.Choose(selected)
 }
 
 type FilterState_t struct {

@@ -194,9 +194,10 @@ const Validator = (function () {
                 for (const ctrl of controls) {
                     const name = ctrl.getAttribute("name");
                     if (name) {
+                        const handler = this.validatorList.get(name);
+                        if (!handler) { continue; }
                         this.ensureDataOrig(ctrl, endpoint, record.dataset.record || '');
                         ctrl.dataset['changed'] = 'false'
-                        const handler = this.validatorList.get(name);
                         handler?.SetupControl(ctrl);
                     }
                 }
@@ -207,10 +208,12 @@ const Validator = (function () {
             const endpoint = dataPost.dataset.post || dataPost.getAttribute('data-post') || '(unknown endpoint)';
             for (const record of records) {
                 for (const ctrl of this.recordControls(record)) {
+                    const name = nameAttr(ctrl);
+                    if (!name || !this.validatorList.has(name)) { continue; }
                     if (typeof ctrl.dataset.orig !== 'undefined') { continue; }
                     console.warn('[Validator] control missing data-orig', {
                         endpoint,
-                        name: nameAttr(ctrl),
+                        name,
                         record: record.dataset.record || '',
                     });
                 }

@@ -3,6 +3,7 @@ package main
 import (
 	"database/sql"
 	"strings"
+	. "pm/lib/htmlHelper"
 	. "pm/lib/output"
 	. "pm/lib/dec2"
 )
@@ -13,6 +14,20 @@ func LoadStaticData() {
 	App.lookup.years = LoadYearVarsIdMap()
 	App.lookup.deductibles = DeductiblesIdMap()
 	LoadFilterControlLookups()
+}
+
+func LoadSelectElements() {
+	App.selects.segment = SegmentSelectElem()
+}
+
+func SegmentSelectElem() Elem_t {
+	optionSlice := make([]Elem_t, 0, len(App.lookup.segments.sort))
+	for _, id := range App.lookup.segments.sort {
+		x, ok := App.lookup.segments.byId[id]
+		if !ok { continue }
+		optionSlice = append(optionSlice, Option().KV(`value`, x.segment).Text(x.name))
+	}
+	return Select(optionSlice...).Name(`segment`).Id(`segment`).Class(`ios-select`)
 }
 
 func LoadFilterControlLookups() {
