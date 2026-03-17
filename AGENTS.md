@@ -8,6 +8,7 @@
 4. Never use templates, JSON-first app flow, REST/SPA layering, ORM/DI/DTO architecture.
 5. Never run `gofmt`/`go fmt`/`goimports`/IDE auto-formatters, and never do style-only "idiomatic Go" rewrites.
 6. Never put `panic(...)` in request/page handlers (`page.*.go`).
+7. No detailed error plumbing 
 
 ## 2) Rewrite Contract (`data-post` / `data-record`)
 
@@ -34,7 +35,7 @@
 
 ## 5) Quality Check
 
-- You must achieve simplicity, maintainability, and no needless code duplication.
+- You must achieve code clarity, simplicity, maintainability, and no needless duplication.
 - I will ask another AI to criticize your for all three factors.
 - Anticipate all criticisms, do not rush to a solution.
 
