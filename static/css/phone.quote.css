@@ -25,51 +25,67 @@ label {
 	color: #43536b;
 }
 
-input[type="text"],
-input[type="date"] {
+.card .card-field :is(input, select) {
 	width: 100%;
 	box-sizing: border-box;
-	padding: 0.5rem 0.5625rem;
+	padding: 0.4rem 0.5rem;
 	border: 0.0625rem solid #9cb6d4;
 	border-radius: 0.5rem;
 	background: #fff;
-	font-size: 0.88rem;
+	font-size: 0.9rem;
 	color: #1e2a3b;
 	font-family: inherit;
 }
 
-input::placeholder,
-textarea::placeholder {
+.euro-wrap {
+	position: relative;
+	width: 100%;
+}
+
+.euro-wrap > input {
+	padding-right: 1.25rem;
+}
+
+.euro-mark {
+	position: absolute;
+	right: 0.55rem;
+	top: 50%;
+	transform: translateY(-50%);
+	pointer-events: none;
+	color: #63758d;
+	font-size: 0.95rem;
+	line-height: 1;
+}
+
+.card .card-field :is(input, textarea)::placeholder {
 	color: #9aa4b2;
 	font-style: italic;
 	opacity: 1;
 }
 
-.card {
-	border: 0.0625rem solid #b9c3cf;
-	border-radius: 0.625rem;
-	background: #fff;
-}
+.card :is(input, select, textarea).center { text-align: center; }
+.card :is(input, select, textarea).right { text-align: right; }
 
-.customer-home {
+.card {
 	--customer-title-bg: #e6f2fc;
 	--customer-body-bg: #f8fcff;
 	--customer-vspace: 0.5rem;
 	--customer-row-gap: var(--customer-vspace);
 	--customer-col-gap: 0.625rem;
-
-	padding-left: max(0.5rem, env(safe-area-inset-left));
-	padding-right: max(0.5rem, env(safe-area-inset-right));
-	padding-bottom: max(0.5rem, env(safe-area-inset-bottom));
-}
-
-.customer-home > .card {
+	border: 0.0625rem solid #b9c3cf;
+	border-radius: 0.625rem;
 	padding: 0;
 	overflow: hidden;
 	background: var(--customer-body-bg);
 }
 
-.customer-home > .card > .card-title {
+.customer-home {
+	padding-left: max(0.5rem, env(safe-area-inset-left));
+	padding-right: max(0.5rem, env(safe-area-inset-right));
+	padding-bottom: max(0.5rem, env(safe-area-inset-bottom));
+}
+
+.card > .card-title {
 	margin: 0;
 	padding: 0.625rem 0.75rem;
 	background: var(--customer-title-bg);
@@ -77,40 +93,40 @@ textarea::placeholder {
 	font-weight: 700;
 }
 
-.customer-home > .card > .card-body {
+.card > .card-body {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	row-gap: var(--customer-row-gap);
+	column-gap: var(--customer-col-gap);
 	background: var(--customer-body-bg);
 	padding: var(--customer-vspace);
 }
 
-.customer-home #Customer {
-	display: grid;
-	grid-template-columns: repeat(12, minmax(0, 1fr));
-	row-gap: var(--customer-row-gap);
-	column-gap: var(--customer-col-gap);
-}
-
-.customer-home #Customer .card-field {
+.card .card-field {
 	min-width: 0;
-	grid-column: span 12;
+	--span: 12;
+	flex: 0 0 calc((100% - (11 * var(--customer-col-gap))) * var(--span) / 12 + (var(--span) - 1) * var(--customer-col-gap));
+	max-width: calc((100% - (11 * var(--customer-col-gap))) * var(--span) / 12 + (var(--span) - 1) * var(--customer-col-gap));
 }
 
-.customer-home #Customer .card-field > label {
-	padding-left: 0.7rem;
+.card .card-field > label {
+	padding-left: 0.5rem;
 	gap: 0.5rem;
 	line-height: 1.2;
-	font-size: 0.86rem;
+	font-size: 0.8rem;
 	font-weight: 700;
 }
 
-.customer-home #Customer .w12-6 {
-	grid-column: span 6;
-}
-
-.customer-home #Customer .w12-12 {
-	grid-column: span 12;
-}
-
-.customer-home input[type="text"],
-.customer-home input[type="date"] {
-	font-size: 1rem; /* prevent Safari auto-zoom on focus */
-}
+.card .w12-1 { --span: 1; }
+.card .w12-2 { --span: 2; }
+.card .w12-3 { --span: 3; }
+.card .w12-4 { --span: 4; }
+.card .w12-5 { --span: 5; }
+.card .w12-6 { --span: 6; }
+.card .w12-7 { --span: 7; }
+.card .w12-8 { --span: 8; }
+.card .w12-9 { --span: 9; }
+.card .w12-10 { --span: 10; }
+.card .w12-11 { --span: 11; }
+.card .w12-12 { --span: 12; }

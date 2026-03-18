@@ -3,7 +3,7 @@ package main
 import (
 	. "pm/lib/htmlHelper"
 	. "pm/lib/date"
-	. "pm/lib/output"
+//	. "pm/lib/output"
 )
 
 func di(name string, date CalDate_t) Elem_t {
@@ -21,9 +21,18 @@ func di(name string, date CalDate_t) Elem_t {
 
 func ti() Elem_t { return Elem(`input`).KV(`autocomplete`,`off`).KV(`type`,`text`) }
 
-func ni() Elem_t {
-return Div().Class(`euro-wrap`).Wrap(
-	Elem(`input`).Type(`number`))
+func ni(name string, value, min, max, step int) Elem_t {
+	return Div().Class(`euro-wrap`).Wrap(
+		Elem(`input`).
+			Type(`number`).
+			Name(name).
+			Value(value).
+			KV(`min`, min).
+			KV(`max`, max).
+			KV(`step`, step).
+			Class(`right`),
+		Span(`€`).Class(`euro-mark`),
+	)
 }
 
 func CustomerCard() Elem_t {
@@ -33,21 +42,14 @@ func CustomerCard() Elem_t {
 	// buyYear := buy.Year()
 
 	body := Div().Class(`card-body`).Id(`Customer`).Wrap(
-		Field(`Name`, 12).Wrap(ti().Name(`name`).Place(`Customer name`)),
-		Field(`Birth date`, 6).Wrap(di(`birth`, birth).Value(birth.Hyphens())),
-		Field(`Buy date`, 6).Wrap(di(`buy`, buy).Value(buy.Hyphens())),
-		Field(`Sick Cover`, 4).Wrap(
-			ni().Name(`sickcover`).Value(75000).KV(`min`, 0).KV(`max`, 150000).KV(`step`, `1000`),
-			Span(`€`).Class(`euro-mark`),
-		),
-	)
+			Field(12).Wrap(ti().Name(`name`).Place(`Customer name`)),
+			Field(`Segment`, 4).Wrap(Chooser(`quo_segments_chooser`).Name(`segment`)),
+			Field(`Birth date`, 4).Wrap(di(`birth`, birth).Class(`right`).Value(birth.Hyphens())),
+			Field(`Buy date`, 4).Wrap(di(`buy`, buy).Class(`right`).Value(buy.Hyphens())),
+			Field(`Sick cover`, 4).Wrap(ni(`sickcover`, 75000, 0, 150000, 1000)),
+			Field(`Prior cover`, 4).Wrap(Chooser(`quo_priorcov_chooser`).Name(`priorcov`)),
+			Field(`Exam`,4).Wrap(Chooser(`quo_noexam_chooser`).Name(`exam`)),
+		)
 	title := Div(`Customer`).Class(`card-title`)
 	return Div().Class(`card`).Wrap(title, body)
-}
-
-func Card(title any, body ...any) Elem_t {
-	return Div(
-		Elem(`h2`).Class(`card-title`).Text(Str(title)),
-		Div(body...).Class(`card-body`),
-	).Class(`card`)
 }
