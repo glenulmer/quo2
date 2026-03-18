@@ -6,63 +6,28 @@ import (
 //	. "pm/lib/output"
 )
 
-func di(name string, date CalDate_t) Elem_t {
-	return DateInput().
-		Name(name).
-		Req().
-		KV(`inputmode`, `none`).
-		KV(`onclick`, `if(this.showPicker){this.showPicker();}`).
-		KV(`onfocus`, `if(this.showPicker){this.showPicker();}`).
-		KV(`onkeydown`, `return false`).
-		KV(`onpaste`, `return false`).
-		KV(`ondrop`, `return false`).
-		Value(date.Format(`yyyy-mm-dd`))
-}
-
-func ti() Elem_t { return Elem(`input`).KV(`autocomplete`,`off`).KV(`type`,`text`) }
-
-func ni(name string, value, min, max, step int) Elem_t {
-	return Div().Class(`euro-wrap`).Wrap(
-		Elem(`input`).
-			Type(`number`).
-			Name(name).
-			Value(value).
-			KV(`min`, min).
-			KV(`max`, max).
-			KV(`step`, step).
-			Class(`right`),
-			Span(`€`).Class(`euro-mark`),
-	)
-}
-
-func CheckCell(name, text string, varBool ...bool) Elem_t {
-	var checked bool
-	if len(varBool) > 0 { checked = varBool[0] }
-	return Div().Class(`check-cell`, `center`).Wrap(
-		CBox(name, checked),
-		Span(text).Class(`check-text`),
-	)
-}
-
 func CustomerCard() Elem_t {
 	today := CurrentDBDate()
 	birth := DateFromYMD(today.Year()-32, 6, 15)
 	buy := today.Days(40).ToWorkDay()
 	// buyYear := buy.Year()
+	adult := true
+	max := true
 
 	body := Div().Class(`card-body`).Id(`Customer`).Wrap(
-		Field(8).Wrap(ti().Name(`name`).Place(`Customer name`)),
+		Field(8).Wrap(ti().Name(`custName`).Place(`Customer name`)),
 		Field(4).Wrap(Chooser(`quo_segments_chooser`).Name(`segment`)),
 
 		Field(`Birth date`, 4).Wrap(di(`birth`, birth).Class(`right`).Value(birth.Hyphens())),
 		Field(`Buy date`, 4).Wrap(di(`buy`, buy).Class(`right`).Value(buy.Hyphens())),
-		Field(`Sick cover`, 4).Wrap(ni(`sickcover`, 75000, 0, 150000, 1000)),
+		Field(`Sick cover`, 4).Wrap(ni(`sickCover`, 75000, 0, 150000, 1000)),
 
-		Field(`Prior cover`, 4).Wrap(Chooser(`quo_priorcov_chooser`).Name(`priorcov`)),
+		Field(`Prior cover`, 4).Wrap(Chooser(`quo_priorcov_chooser`).Name(`priorCov`)),
 		Field(`Exam`,4).Wrap(Chooser(`quo_noexam_chooser`).Name(`exam`)),
 		Field(`Specialist`,4).Wrap(Chooser(`quo_specialist_chooser`).Name(`specialist`)),
 
-		Field(12).Wrap(
+		Field(1).Wrap(`&nbsp;`),
+		Field(10).Wrap(
 			Div().Class(`check-grid`).Wrap(
 				CheckCell(`vision`, `Vision`, false),
 				CheckCell(`tempVisa`, `Temp Visa`, false),
@@ -70,7 +35,22 @@ func CustomerCard() Elem_t {
 				CheckCell(`naturalMed`, `Natural Med`, false),
 			),
 		),
+		Field(1).Wrap(`&nbsp;`),
+
+		Field(`Deductible`, 4).Wrap(Chooser(`quo_deductibles_chooser`, adult, !max).Name(`deductibleMin`).Class(`right`)),
+		Field(`Hospital`, 4).Wrap(Chooser(`quo_level_chooser_max`, 3, !max).Name(`hospitalMin`)), // use categ
+		Field(`Dental`, 4).Wrap(Chooser(`quo_level_chooser_max`, 4, !max).Name(`dentalMin`)), // use categ
+
+
+		Field(4).Wrap(Chooser(`quo_deductibles_chooser`, adult, max).Name(`deductibleMax`).Class(`right`)),
+		Field(4).Wrap(Chooser(`quo_level_chooser_max`, 3, max).Name(`hospitalMax`)), // use categ
+		Field(4).Wrap(Chooser(`quo_level_chooser_max`, 4, max).Name(`dentalMax`)), // use categ
+
 	)
-	title := Div(`Customer`).Class(`card-title`)
+
+	title := Div(`Quote Information`).Class(`card-title`)
 	return Div().Class(`card`).Wrap(title, body)
 }
+
+/*
+*/
