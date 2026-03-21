@@ -20,7 +20,7 @@ func LoadStaticData() {
 }
 
 type Categ_t struct {
-	categId int
+	categId CategId_t
 	name string
 	catsur int
 	required int
@@ -35,7 +35,7 @@ func LoadCategIdMap() IdMap_t[Categ_t] {
 		var x Categ_t
 		rows.Scan(&x.categId, &x.name, &x.catsur, &x.required)
 		if rows.HasError() { panic(rows.Message()) }
-		out = out.Add(x.categId, x)
+		out = out.Add(int(x.categId), x)
 	}
 	return out
 }
